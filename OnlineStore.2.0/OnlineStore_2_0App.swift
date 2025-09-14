@@ -8,10 +8,10 @@
 import SwiftUI
 
 @main
-struct OnlineStore_2_0App: App {
+struct OnlineStoreApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            DashboardView()
         }
     }
 }
