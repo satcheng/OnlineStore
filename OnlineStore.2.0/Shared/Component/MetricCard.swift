@@ -12,19 +12,17 @@ struct MetricCard: View {
     let value: String
 
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(alignment: .leading, spacing: 6) {
             Text(title)
-                .font(.headline)
+                .font(.subheadline.weight(.medium))
                 .foregroundColor(Theme.Colors.secondaryText)
-                .frame(maxWidth: .infinity, alignment: .leading)
 
             Text(value)
-                .font(.title2.weight(.semibold))
+                .font(.title3.weight(.semibold))
                 .foregroundColor(Theme.Colors.primaryText)
-                .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding()
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity) // 🔹 se expanden de forma igualitaria en HStack
         .background(
             Theme.Colors.cardBackground,
             in: RoundedRectangle(cornerRadius: 16)

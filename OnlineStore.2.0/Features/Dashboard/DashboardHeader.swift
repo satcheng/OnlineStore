@@ -10,26 +10,36 @@ import SwiftUI
 struct DashboardHeader: View {
     let date: Date
     let centerCode: String
+    @State private var showMenu = false
 
     var body: some View {
         VStack(spacing: 8) {
-            // Fecha
-            Text(dateFormatted)
-                .font(.subheadline.weight(.medium))
-                .foregroundColor(Theme.Colors.secondaryText)
-                .frame(maxWidth: .infinity, alignment: .leading)
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    // Fecha
+                    Text(dateFormatted)
+                        .font(.subheadline.weight(.medium))
+                        .foregroundColor(Theme.Colors.secondaryText)
 
-            // Centro
-            Text("CENTRO \(centerCode)")
-                .font(.title3.weight(.semibold))
-                .foregroundColor(Theme.Colors.primaryText)
-                .frame(maxWidth: .infinity, alignment: .leading)
+                    // Centro
+                    Text("CENTRO \(centerCode)")
+                        .font(.title3.weight(.semibold))
+                        .foregroundColor(Theme.Colors.primaryText)
+                }
 
-            // Título PEDIDOS
-            Text("Pedidos")
-                .font(.largeTitle.weight(.bold))
-                .foregroundColor(Theme.Colors.primaryText)
-                .frame(maxWidth: .infinity, alignment: .leading)
+                Spacer()
+
+                // 🔹 Botón de menú hamburguesa
+                Menu {
+                    Button("Configuración", action: {})
+                    Button("Cerrar sesión", action: {})
+                } label: {
+                    Image(systemName: "line.3.horizontal")
+                        .font(.title2)
+                        .foregroundColor(Theme.Colors.primaryText)
+                        .padding(.trailing, 8)
+                }
+            }
 
             Divider()
                 .background(Theme.Colors.secondaryText.opacity(0.3))

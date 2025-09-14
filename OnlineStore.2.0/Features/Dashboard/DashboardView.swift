@@ -15,14 +15,15 @@ struct DashboardView: View {
             ScrollView {
                 VStack(spacing: 16) {
                     
-                    // Cabecera de Pedidos
+                    // Cabecera
                     DashboardHeader(date: Date(), centerCode: vm.centerCode)
                     
-                    // Card de pedidos
-                    PedidoRingCard(
-                        completed: vm.completedOrders,
-                        total: vm.totalOrders
-                    )
+                    // KPIs de pedidos en fila
+                    HStack(spacing: 12) {
+                        MetricCard(title: "Totales", value: "\(vm.totalOrders)")
+                        MetricCard(title: "En curso", value: "\(vm.inProgressOrders)")
+                        MetricCard(title: "Hechos", value: "\(vm.completedOrders)")
+                    }
                     
                     // Gráfica de trabajo pendiente por hora
                     HourlyBarChartView(
@@ -31,16 +32,7 @@ struct DashboardView: View {
                         orders: vm.orders
                     )
                     
-                    // Métricas
-                    HStack(spacing: 16) {
-                        MetricCard(title: "Pendientes", value: "\(vm.pendingOrders)")
-                        MetricCard(title: "En curso", value: "\(vm.inProgressOrders)")
-                    }
-                    
-                    HStack(spacing: 16) {
-                        MetricCard(title: "Completados", value: "\(vm.completedOrders)")
-                        MetricCard(title: "Tiempo medio", value: "\(vm.avgTime)m\nOBJ: 12m")
-                    }
+                    // 🔹 Quitada la card de Tiempo medio
                 }
                 .padding(.bottom)
             }
