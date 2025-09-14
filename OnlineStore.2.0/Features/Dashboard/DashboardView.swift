@@ -16,10 +16,16 @@ struct DashboardView: View {
             ScrollView {
                 VStack(spacing: 16) {
 
-                    // Cabecera con fecha y centro
+                    // Cabecera
                     DashboardHeader(
                         date: Date(),
                         centerCode: "023"
+                    )
+
+                    // 👉 KPI de total pedidos con barra horizontal
+                    TotalOrdersCard(
+                        total: viewModel.total,
+                        completed: viewModel.count(for: .hecho)
                     )
 
                     // KPIs (fila 1)
@@ -46,7 +52,7 @@ struct DashboardView: View {
                         }
                     }
 
-                    // Gráfica horaria con callback
+                    // Gráfica horaria
                     HourlyBarChartView(
                         data: viewModel.hourlyData,
                         onHourTap: { hour in
@@ -54,7 +60,7 @@ struct DashboardView: View {
                         }
                     )
 
-                    // NavigationLink oculto para navegar desde la gráfica
+                    // NavigationLink oculto para navegar desde gráfica
                     NavigationLink(
                         destination: Group {
                             if let hour = selectedHour {
