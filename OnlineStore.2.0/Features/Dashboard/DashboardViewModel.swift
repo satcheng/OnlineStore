@@ -5,40 +5,32 @@
 //  Created by Dario Marquez on 14/9/25.
 //
 
-import SwiftUI
+import Foundation
 
-class DashboardViewModel: ObservableObject {
-    @Published var orders: [Order] = []
-    @Published var hourlyData: [HourlyData] = []
-    @Published var centerCode: String = "123"
+final class DashboardViewModel: ObservableObject {
+    @Published var orders: [Order] = OrderService.sampleOrders()
 
-    var totalOrders: Int { orders.count }
-    var completedOrders: Int { orders.filter { $0.status == .completed }.count }
-    var pendingOrders: Int { orders.filter { $0.status == .pending }.count }
-    var inProgressOrders: Int { orders.filter { $0.status == .inProgress }.count }
-    var avgTime: Int { 11 } // mock
-
-    init() {
-        self.orders = OrderService.sample
-        self.hourlyData = DashboardViewModel.buildHourlyData(orders: orders)
+    // Conteo por estado
+    func count(for status: OrderStatus) -> Int {
+        orders.filter { $0.status == status }.count
     }
 
-    static func buildHourlyData(orders: [Order]) -> [HourlyData] {
-        let hours = Array(10...20)
-        return hours.map { hour in
-            let filtered = orders.filter {
-                Calendar.current.component(.hour, from: $0.date) == hour
-            }
-            let total = filtered.count
-            let completed = filtered.filter { $0.status == .completed }.count
+    var total: Int {
+        orders.count
+    }
+
+    // Datos horarios para la gráfica
+    var hourlyData: [HourlyData] {
+        let cal = Calendar.current
+        let grouped = Dictionary(grouping: orders) { order in
+            cal.component(.hour, from: order.date)
+        }
+
+        return (10...20).map { hour in
+            let bucket = grouped[hour] ?? []
+            let total = bucket.count
+            let completed = bucket.filter { $0.status == .hecho }.count
             return HourlyData(hour: hour, total: total, completed: completed)
         }
     }
-}
-
-struct HourlyData: Identifiable {
-    let id = UUID()
-    let hour: Int
-    let total: Int
-    let completed: Int
 }

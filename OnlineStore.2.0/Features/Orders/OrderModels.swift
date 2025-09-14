@@ -8,19 +8,17 @@
 import Foundation
 
 enum OrderStatus: String, CaseIterable {
-    case pending
-    case inProgress
-    case completed
-}
-
-struct OrderLine: Identifiable {
-    let id = UUID()
-    let product: String
+    case esperandoPicking = "Esp. Picking"
+    case enPicking = "En Picking"
+    case esperandoReposicion = "Esp. Reposición"
+    case esperandoCliente = "Esp. Cliente"
+    case esperandoPacking = "Esp. Packing"
+    case hecho = "Hechos"
 }
 
 struct Order: Identifiable {
     let id: String
     let status: OrderStatus
-    let lines: [OrderLine]
     let date: Date
+    let lines: Int   // 🔹 número de artículos (líneas)
 }

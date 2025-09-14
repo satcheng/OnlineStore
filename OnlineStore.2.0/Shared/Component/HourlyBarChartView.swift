@@ -9,79 +9,40 @@ import SwiftUI
 
 struct HourlyBarChartView: View {
     let data: [HourlyData]
-    let maxValue: Int
-    let orders: [Order]
-
-    private let chartHeight: CGFloat = 120
+    var onHourTap: ((Int) -> Void)? = nil
 
     var body: some View {
-        let chartMax = max(1, maxValue)
-        let step = max(1, chartMax / 5)
-        let topTick = ((chartMax + step - 1) / step) * step
-        let ticks: [Int] = Array(stride(from: topTick, through: 0, by: -step))
-
-        VStack(spacing: 0) {
+        VStack(alignment: .leading) {
             Text("Trabajo pendiente por hora")
-                .font(.title2.weight(.semibold))
-                .foregroundColor(Theme.Colors.primaryText)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding([.top, .horizontal], 16)
-
-            Divider()
-                .background(Theme.Colors.secondaryText.opacity(0.3))
-                .padding(.horizontal, 16)
-                .padding(.bottom, 12)
+                .font(.headline)
+                .padding(.bottom, 4)
 
             HStack(alignment: .bottom, spacing: 8) {
-                // Eje Y
-                VStack(spacing: 0) {
-                    ForEach(ticks, id: \.self) { tick in
-                        HStack {
-                            Spacer()
-                            Text("\(tick)")
-                                .font(.caption2)
-                                .foregroundColor(Theme.Colors.secondaryText)
+                ForEach(data) { entry in
+                    VStack {
+                        ZStack(alignment: .bottom) {
+                            RoundedRectangle(cornerRadius: 4)
+                                .fill(Color.red.opacity(0.3))
+                                .frame(height: CGFloat(entry.total) * 10)
+
+                            RoundedRectangle(cornerRadius: 4)
+                                .fill(Color.red)
+                                .frame(height: CGFloat(entry.completed) * 10)
                         }
-                        .frame(height: chartHeight / CGFloat(max(1, ticks.count - 1)))
-                    }
-                }
-                .frame(width: 26)
-
-                // Barras
-                HStack(alignment: .bottom, spacing: 6) {
-                    ForEach(data) { entry in
-                        NavigationLink(
-                            destination: OrdersListView(
-                                orders: orders,
-                                hourFilter: entry.hour
-                            )
-                        ) {
-                            VStack {
-                                ZStack(alignment: .bottom) {
-                                    Rectangle()
-                                        .fill(Theme.Colors.pedidoRed.opacity(0.3))
-                                        .frame(height: CGFloat(entry.total) / CGFloat(topTick) * chartHeight)
-
-                                    Rectangle()
-                                        .fill(Theme.Colors.pedidoRed)
-                                        .frame(height: CGFloat(entry.completed) / CGFloat(topTick) * chartHeight)
-                                }
-
-                                Text("\(entry.hour)")
-                                    .font(.caption2)
-                                    .foregroundColor(Theme.Colors.secondaryText)
-                            }
+                        .onTapGesture {
+                            onHourTap?(entry.hour)
                         }
-                        .buttonStyle(.plain)
+
+                        Text("\(entry.hour)")
+                            .font(.caption2)
+                            .foregroundColor(.gray)
                     }
                 }
             }
-            .frame(height: chartHeight + 24)
-            .padding()
+            .frame(maxHeight: 200)
         }
-        .background(
-            Theme.Colors.cardBackground,
-            in: RoundedRectangle(cornerRadius: Theme.Layout.cornerRadius)
-        )
+        .padding()
+        .background(Color(.secondarySystemBackground))
+        .cornerRadius(12)
     }
 }

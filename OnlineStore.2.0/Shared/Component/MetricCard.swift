@@ -9,23 +9,32 @@ import SwiftUI
 
 struct MetricCard: View {
     let title: String
-    let value: String
+    let value: Int   // 👈 ahora es Int, no String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack {
             Text(title)
-                .font(.subheadline.weight(.medium))
-                .foregroundColor(Theme.Colors.secondaryText)
+                .font(.caption)
+                .foregroundColor(.gray)
+                .multilineTextAlignment(.center)
 
-            Text(value)
-                .font(.title3.weight(.semibold))
-                .foregroundColor(Theme.Colors.primaryText)
+            Text("\(value)")   // 👈 lo convertimos a String aquí
+                .font(.title)
+                .bold()
+                .foregroundColor(.primary)
         }
+        .frame(maxWidth: .infinity, minHeight: 80)
         .padding()
-        .frame(maxWidth: .infinity) // 🔹 se expanden de forma igualitaria en HStack
-        .background(
-            Theme.Colors.cardBackground,
-            in: RoundedRectangle(cornerRadius: 16)
-        )
+        .background(Color(.secondarySystemBackground))
+        .cornerRadius(12)
     }
+}
+
+#Preview {
+    HStack(spacing: 12) {
+        MetricCard(title: "Esp. Picking", value: 5)
+        MetricCard(title: "En Picking", value: 3)
+        MetricCard(title: "Hechos", value: 12)
+    }
+    .padding()
 }

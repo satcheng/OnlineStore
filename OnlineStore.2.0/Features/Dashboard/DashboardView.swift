@@ -8,33 +8,71 @@
 import SwiftUI
 
 struct DashboardView: View {
-    @StateObject private var vm = DashboardViewModel()
+    @StateObject private var viewModel = DashboardViewModel()
+    @State private var selectedHour: Int? = nil
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 16) {
-                    
-                    // Cabecera
-                    DashboardHeader(date: Date(), centerCode: vm.centerCode)
-                    
-                    // KPIs de pedidos en fila
-                    HStack(spacing: 12) {
-                        MetricCard(title: "Totales", value: "\(vm.totalOrders)")
-                        MetricCard(title: "En curso", value: "\(vm.inProgressOrders)")
-                        MetricCard(title: "Hechos", value: "\(vm.completedOrders)")
-                    }
-                    
-                    // Gráfica de trabajo pendiente por hora
-                    HourlyBarChartView(
-                        data: vm.hourlyData,
-                        maxValue: vm.hourlyData.map { $0.total }.max() ?? 0,
-                        orders: vm.orders
+
+                    // Cabecera con fecha y centro
+                    DashboardHeader(
+                        date: Date(),
+                        centerCode: "023"
                     )
-                    
-                    // 🔹 Quitada la card de Tiempo medio
+
+                    // KPIs (fila 1)
+                    HStack(spacing: 12) {
+                        ForEach([OrderStatus.esperandoPicking, .enPicking, .esperandoReposicion], id: \.self) { status in
+                            NavigationLink {
+                                OrdersListView(viewModel: viewModel, filterStatus: status)
+                            } label: {
+                                MetricCard(title: status.rawValue,
+                                           value: viewModel.count(for: status))
+                            }
+                        }
+                    }
+
+                    // KPIs (fila 2)
+                    HStack(spacing: 12) {
+                        ForEach([OrderStatus.esperandoCliente, .esperandoPacking, .hecho], id: \.self) { status in
+                            NavigationLink {
+                                OrdersListView(viewModel: viewModel, filterStatus: status)
+                            } label: {
+                                MetricCard(title: status.rawValue,
+                                           value: viewModel.count(for: status))
+                            }
+                        }
+                    }
+
+                    // Gráfica horaria con callback
+                    HourlyBarChartView(
+                        data: viewModel.hourlyData,
+                        onHourTap: { hour in
+                            selectedHour = hour
+                        }
+                    )
+
+                    // NavigationLink oculto para navegar desde la gráfica
+                    NavigationLink(
+                        destination: Group {
+                            if let hour = selectedHour {
+                                OrdersListView(viewModel: viewModel, filterHour: hour)
+                            } else {
+                                EmptyView()
+                            }
+                        },
+                        isActive: Binding(
+                            get: { selectedHour != nil },
+                            set: { if !$0 { selectedHour = nil } }
+                        )
+                    ) {
+                        EmptyView()
+                    }
                 }
-                .padding(.bottom)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 24)
             }
             .navigationBarHidden(true)
         }

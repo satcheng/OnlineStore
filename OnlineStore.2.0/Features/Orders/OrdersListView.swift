@@ -8,56 +8,54 @@
 import SwiftUI
 
 struct OrdersListView: View {
-    let orders: [Order]
-    var hourFilter: Int? = nil
+    @ObservedObject var viewModel: DashboardViewModel
+    var filterStatus: OrderStatus? = nil
+    var filterHour: Int? = nil
+
+    var filteredOrders: [Order] {
+        viewModel.orders.filter { order in
+            var matches = true
+            if let status = filterStatus {
+                matches = matches && order.status == status
+            }
+            if let hour = filterHour {
+                let orderHour = Calendar.current.component(.hour, from: order.date)
+                matches = matches && orderHour == hour
+            }
+            return matches
+        }
+    }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 12) {
-                ForEach(filteredOrders) { order in
-                    OrderRow(order: order)
+        List {
+            ForEach(filteredOrders) { order in
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Pedido \(order.id)")
+                        .font(.headline)
+
+                    Text(order.status.rawValue)
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+
+                    Text("Líneas: \(order.lines)")
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
+
+                    Text("Fecha: \(formattedDate(order.date))")
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
                 }
+                .padding(8)
+                .background(Color(.secondarySystemBackground))
+                .cornerRadius(12)
             }
-            .padding()
         }
         .navigationTitle("Pedidos")
-        .background(Color.black.ignoresSafeArea())
     }
 
-    private var filteredOrders: [Order] {
-        if let hour = hourFilter {
-            return orders.filter {
-                Calendar.current.component(.hour, from: $0.date) == hour
-            }
-        }
-        return orders
-    }
-}
-
-struct OrderRow: View {
-    let order: Order
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text("Pedido #\(order.id)")
-                .font(.headline)
-                .foregroundColor(.white)
-
-            Text("Estado: \(order.status.rawValue.capitalized)")
-                .font(.subheadline)
-                .foregroundColor(.gray)
-
-            Text("Líneas: \(order.lines.count)")
-                .font(.subheadline)
-                .foregroundColor(.gray)
-
-            Text("Fecha: \(order.date.formatted(date: .abbreviated, time: .shortened))")
-                .font(.caption)
-                .foregroundColor(.gray)
-        }
-        .padding()
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Theme.Colors.cardBackground)
-        .cornerRadius(12)
+    private func formattedDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd/MM/yyyy HH:mm"
+        return formatter.string(from: date)
     }
 }
