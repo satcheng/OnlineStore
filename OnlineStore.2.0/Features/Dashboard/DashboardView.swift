@@ -42,7 +42,7 @@ struct DashboardView: View {
 
                     // KPIs (fila 2)
                     HStack(spacing: 12) {
-                        ForEach([OrderStatus.esperandoCliente, .esperandoPacking, .hecho], id: \.self) { status in
+                        ForEach([OrderStatus.esperandoCliente, .esperandoPacking, .enPacking], id: \.self) { status in
                             NavigationLink {
                                 OrdersListView(viewModel: viewModel, filterStatus: status)
                             } label: {

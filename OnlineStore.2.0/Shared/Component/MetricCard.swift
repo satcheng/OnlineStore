@@ -34,7 +34,7 @@ struct MetricCard: View {
     HStack(spacing: 12) {
         MetricCard(title: "Esp. Picking", value: 5)
         MetricCard(title: "En Picking", value: 3)
-        MetricCard(title: "Hechos", value: 12)
+        MetricCard(title: "En Packing", value: 12)
     }
     .padding()
 }

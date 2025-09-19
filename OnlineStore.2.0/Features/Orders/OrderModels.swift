@@ -10,9 +10,10 @@ import Foundation
 enum OrderStatus: String, CaseIterable {
     case esperandoPicking = "Esp. Picking"
     case enPicking = "En Picking"
-    case esperandoReposicion = "Esp. Reposición"
+    case esperandoReposicion = "Reposición"
     case esperandoCliente = "Esp. Cliente"
     case esperandoPacking = "Esp. Packing"
+    case enPacking = "En Packing"
     case hecho = "Hechos"
 }
 
