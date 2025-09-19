@@ -60,8 +60,3 @@ struct TotalOrdersCard: View {
         .cornerRadius(12)
     }
 }
-
-#Preview {
-    TotalOrdersCard(total: 50, completed: 20)
-        .padding()
-}

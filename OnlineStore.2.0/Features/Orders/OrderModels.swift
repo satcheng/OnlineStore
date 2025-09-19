@@ -10,6 +10,7 @@ import Foundation
 enum OrderStatus: String, CaseIterable {
     case esperandoPicking = "Esp. Picking"
     case enPicking = "En Picking"
+    case endedPicking = "Picking Finalizado"
     case esperandoReposicion = "Reposición"
     case esperandoCliente = "Esp. Cliente"
     case esperandoPacking = "Esp. Packing"
@@ -17,9 +18,20 @@ enum OrderStatus: String, CaseIterable {
     case hecho = "Hechos"
 }
 
+struct OrderLine: Identifiable {
+    let id = UUID()
+    var status: OrderStatus
+}
+
 struct Order: Identifiable {
-    let id: String
-    let status: OrderStatus
+    let id: String       // 🔹 número de pedido en formato 12 dígitos
     let date: Date
-    let lines: Int   // 🔹 número de artículos (líneas)
+    var lines: [OrderLine]
+
+    /// Estado del pedido = el estado más bajo de sus líneas
+    var status: OrderStatus {
+        lines.map { $0.status }.min { lhs, rhs in
+            OrderStatus.allCases.firstIndex(of: lhs)! < OrderStatus.allCases.firstIndex(of: rhs)!
+        } ?? .esperandoPicking
+    }
 }

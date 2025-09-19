@@ -23,18 +23,9 @@ struct MetricCard: View {
                 .bold()
                 .foregroundColor(.primary)
         }
-        .frame(maxWidth: .infinity, minHeight: 80)
+        .frame(maxWidth: .infinity, minHeight: 40)
         .padding()
         .background(Color(.secondarySystemBackground))
         .cornerRadius(12)
     }
-}
-
-#Preview {
-    HStack(spacing: 12) {
-        MetricCard(title: "Esp. Picking", value: 5)
-        MetricCard(title: "En Picking", value: 3)
-        MetricCard(title: "En Packing", value: 12)
-    }
-    .padding()
 }
