@@ -48,13 +48,11 @@ struct TotalOrdersCard: View {
                         .font(.headline)
                         .foregroundColor(.primary)
                     
-                    Text("\(completedOrders)/\(totalOrders)")
-                        .font(.headline)
-                        .bold()
-                        .foregroundColor(.primary)
-
                     Spacer()
-
+                    
+                    Text("\(completedOrders)/\(totalOrders) | ")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
                     Text(ordersPercentageText)
                         .font(.subheadline)
                         .foregroundColor(.secondary)
@@ -84,13 +82,11 @@ struct TotalOrdersCard: View {
                         .font(.headline)
                         .foregroundColor(.primary)
 
-                    Text("\(completedLines)/\(totalLines)")
-                        .font(.headline)
-                        .bold()
-                        .foregroundColor(.primary)
-
                     Spacer()
-
+                    
+                    Text("\(completedLines)/\(totalLines) | ")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
                     Text(linesPercentageText)
                         .font(.subheadline)
                         .foregroundColor(.secondary)
