@@ -12,6 +12,9 @@ struct OrdersListView: View {
     var filterStatus: OrderStatus? = nil
     var filterHour: Int? = nil
 
+    // 🔹 Lista de pickers (ejemplo)
+    private let pickers = PickerService.samplePickers()
+
     private var filteredOrders: [Order] {
         viewModel.orders.filter { order in
             var matches = true
@@ -29,9 +32,17 @@ struct OrdersListView: View {
     var body: some View {
         List {
             ForEach(filteredOrders) { order in
-                OrderCard(order: order)
-                    .listRowSeparator(.hidden)
-                    .listRowBackground(Color.clear)
+                if let picker = pickers.first(where: { $0.assignedOrders.contains(order.id) }) {
+                    // Pedido con picker asignado
+                    OrderCard(order: order, pickerInitials: picker.initials)
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
+                } else {
+                    // Pedido sin asignar → círculo vacío
+                    OrderCard(order: order, pickerInitials: "")
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
+                }
             }
         }
         .listStyle(PlainListStyle())
@@ -40,3 +51,4 @@ struct OrdersListView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 }
+

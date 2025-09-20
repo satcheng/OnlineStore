@@ -14,73 +14,184 @@ struct OrderService {
         let baseDate = Date()
         var idCounter = 1
 
-        func makeOrder(hour: Int, lineStatuses: [OrderStatus]) -> Order {
+        func makeOrder(hour: Int,
+                       type: DeliveryType,
+                       lineStatuses: [OrderStatus]) -> Order {
             let date = calendar.date(bySettingHour: hour, minute: 0, second: 0, of: baseDate)!
-            let orderLines = lineStatuses.map { OrderLine(status: $0) }
-
             let order = Order(
                 id: String(format: "%012d", idCounter),
                 date: date,
-                lines: orderLines
+                lines: lineStatuses.map { OrderLine(status: $0) },
+                deliveryType: type
             )
-
             idCounter += 1
             return order
         }
 
-        // 🔹 50 pedidos definidos con arrays de estados
-        orders.append(contentsOf: [
-            makeOrder(hour: 10, lineStatuses: [.hecho, .hecho, .hecho]),
-            makeOrder(hour: 10, lineStatuses: [.hecho, .hecho]),
-            makeOrder(hour: 10, lineStatuses: [.hecho, .hecho, .hecho, .hecho, .hecho]),
-            makeOrder(hour: 10, lineStatuses: [.hecho, .hecho, .hecho, .hecho]),
-            makeOrder(hour: 11, lineStatuses: [.hecho, .hecho, .hecho, .hecho]),
-            makeOrder(hour: 11, lineStatuses: [.hecho, .hecho, .hecho]),
-            makeOrder(hour: 11, lineStatuses: [.hecho, .hecho, .hecho, .hecho, .hecho, .hecho]),
-            makeOrder(hour: 11, lineStatuses: [.hecho, .hecho]),
-            makeOrder(hour: 11, lineStatuses: [.hecho, .hecho, .hecho, .hecho]),
-            makeOrder(hour: 11, lineStatuses: [.hecho, .hecho, .hecho, .hecho, .hecho]),
-            makeOrder(hour: 12, lineStatuses: [.hecho, .hecho, .hecho]),
-            makeOrder(hour: 12, lineStatuses: [.hecho, .hecho, .hecho, .hecho]),
-            makeOrder(hour: 12, lineStatuses: [.hecho, .hecho]),
-            makeOrder(hour: 12, lineStatuses: [.hecho, .hecho, .hecho, .hecho, .hecho]),
-            makeOrder(hour: 12, lineStatuses: [.hecho, .hecho, .hecho]),
-            makeOrder(hour: 13, lineStatuses: [.hecho, .hecho, .hecho, .hecho]),
-            makeOrder(hour: 13, lineStatuses: [.enPacking, .enPacking, .enPacking]),
-            makeOrder(hour: 13, lineStatuses: [.enPacking, .enPacking]),
-            makeOrder(hour: 13, lineStatuses: [.esperandoPacking]),
-            makeOrder(hour: 13, lineStatuses: [.esperandoPacking, .esperandoPacking, .esperandoPacking]),
-            makeOrder(hour: 13, lineStatuses: [.enPicking, .enPicking, .endedPicking]),
-            makeOrder(hour: 14, lineStatuses: [.enPicking, .endedPicking]),
-            makeOrder(hour: 14, lineStatuses: [.enPicking, .enPicking, .endedPicking, .endedPicking]),
-            makeOrder(hour: 14, lineStatuses: [.enPicking, .enPicking, .endedPicking]),
-            makeOrder(hour: 14, lineStatuses: [.enPicking]),
-            makeOrder(hour: 15, lineStatuses: [.endedPicking, .esperandoCliente]),
-            makeOrder(hour: 15, lineStatuses: [.esperandoReposicion, .endedPicking, .endedPicking]),
-            makeOrder(hour: 15, lineStatuses: [.esperandoCliente, .esperandoCliente, .esperandoCliente]),
-            makeOrder(hour: 16, lineStatuses: [.esperandoPicking, .esperandoPicking, .esperandoPicking]),
-            makeOrder(hour: 16, lineStatuses: [.esperandoPicking, .esperandoPicking]),
-            makeOrder(hour: 16, lineStatuses: [.esperandoPicking, .esperandoPicking, .esperandoPicking, .esperandoPicking]),
-            makeOrder(hour: 17, lineStatuses: [.esperandoPicking, .esperandoPicking, .esperandoPicking]),
-            makeOrder(hour: 17, lineStatuses: [.esperandoPicking, .esperandoPicking, .esperandoPicking, .esperandoPicking]),
-            makeOrder(hour: 17, lineStatuses: [.esperandoPicking, .esperandoPicking, .esperandoPicking, .esperandoPicking, .esperandoPicking]),
-            makeOrder(hour: 17, lineStatuses: [.esperandoPicking, .esperandoPicking]),
-            makeOrder(hour: 17, lineStatuses: [.esperandoPicking, .esperandoPicking, .esperandoPicking]),
-            makeOrder(hour: 18, lineStatuses: [.esperandoPicking, .esperandoPicking, .esperandoPicking]),
-            makeOrder(hour: 18, lineStatuses: [.esperandoPicking, .esperandoPicking, .esperandoPicking, .esperandoPicking]),
-            makeOrder(hour: 18, lineStatuses: [.esperandoPicking, .esperandoPicking]),
-            makeOrder(hour: 18, lineStatuses: [.esperandoPicking, .esperandoPicking, .esperandoPicking]),
-            makeOrder(hour: 18, lineStatuses: [.esperandoPicking, .esperandoPicking]),
-            makeOrder(hour: 18, lineStatuses: [.esperandoPicking, .esperandoPicking, .esperandoPicking, .esperandoPicking]),
-            makeOrder(hour: 18, lineStatuses: [.esperandoPicking, .esperandoPicking]),
-            makeOrder(hour: 19, lineStatuses: [.esperandoPicking, .esperandoPicking]),
-            makeOrder(hour: 19, lineStatuses: [.esperandoPicking, .esperandoPicking, .esperandoPicking]),
-            makeOrder(hour: 19, lineStatuses: [.esperandoPicking]),
-            makeOrder(hour: 19, lineStatuses: [.esperandoPicking, .esperandoPicking]),
-            makeOrder(hour: 19, lineStatuses: [.esperandoPicking, .esperandoPicking, .esperandoPicking]),
-            makeOrder(hour: 20, lineStatuses: [.esperandoPicking, .esperandoPicking]),
-            makeOrder(hour: 20, lineStatuses: [.esperandoPicking])
-        ])
+        // 🔹 Pedidos generados a partir de la tabla
+
+        orders.append(makeOrder(hour: 10, type: .envio,
+            lineStatuses: Array(repeating: .hecho, count: 30)
+        ))
+        orders.append(makeOrder(hour: 10, type: .recogida,
+            lineStatuses: Array(repeating: .hecho, count: 22)
+        ))
+        orders.append(makeOrder(hour: 10, type: .recogida,
+            lineStatuses: Array(repeating: .hecho, count: 15)
+        ))
+        orders.append(makeOrder(hour: 11, type: .envio,
+            lineStatuses: Array(repeating: .hecho, count: 23)
+        ))
+        orders.append(makeOrder(hour: 11, type: .recogida,
+            lineStatuses: Array(repeating: .hecho, count: 12)
+        ))
+        orders.append(makeOrder(hour: 11, type: .recogida,
+            lineStatuses: Array(repeating: .hecho, count: 46)
+        ))
+        orders.append(makeOrder(hour: 11, type: .recogida,
+            lineStatuses: Array(repeating: .hecho, count: 13)
+        ))
+        orders.append(makeOrder(hour: 11, type: .envio,
+            lineStatuses: Array(repeating: .hecho, count: 32)
+        ))
+        orders.append(makeOrder(hour: 12, type: .envio,
+            lineStatuses: Array(repeating: .hecho, count: 10)
+        ))
+        orders.append(makeOrder(hour: 12, type: .envio,
+            lineStatuses: Array(repeating: .hecho, count: 41)
+        ))
+        orders.append(makeOrder(hour: 12, type: .envio,
+            lineStatuses: Array(repeating: .hecho, count: 11)
+        ))
+        orders.append(makeOrder(hour: 12, type: .recogida,
+            lineStatuses: Array(repeating: .hecho, count: 8)
+        ))
+        orders.append(makeOrder(hour: 12, type: .recogida,
+            lineStatuses: Array(repeating: .hecho, count: 22)
+        ))
+        orders.append(makeOrder(hour: 12, type: .envio,
+            lineStatuses: Array(repeating: .hecho, count: 12)
+        ))
+        orders.append(makeOrder(hour: 12, type: .envio,
+            lineStatuses: Array(repeating: .hecho, count: 22)
+        ))
+        orders.append(makeOrder(hour: 13, type: .envio,
+            lineStatuses: Array(repeating: .esperandoReposicion, count: 1) +
+                          Array(repeating: .esperandoCliente, count: 2) +
+                          Array(repeating: .hecho, count: 21)
+        ))
+        orders.append(makeOrder(hour: 13, type: .envio,
+            lineStatuses: Array(repeating: .esperandoPicking, count: 3) +
+                          Array(repeating: .hecho, count: 12)
+        ))
+        orders.append(makeOrder(hour: 13, type: .recogida,
+            lineStatuses: Array(repeating: .esperandoCliente, count: 2) +
+                          Array(repeating: .hecho, count: 10)
+        ))
+        orders.append(makeOrder(hour: 13, type: .envio,
+            lineStatuses: Array(repeating: .enPicking, count: 23) +
+                          Array(repeating: .endedPicking, count: 12) +
+                          Array(repeating: .esperandoReposicion, count: 1) +
+                          Array(repeating: .hecho, count: 41)
+        ))
+        orders.append(makeOrder(hour: 14, type: .envio,
+            lineStatuses: Array(repeating: .enPicking, count: 27) +
+                          Array(repeating: .endedPicking, count: 15) +
+                          Array(repeating: .esperandoReposicion, count: 2)
+        ))
+        orders.append(makeOrder(hour: 14, type: .recogida,
+            lineStatuses: Array(repeating: .esperandoPicking, count: 12) +
+                          Array(repeating: .enPicking, count: 31) +
+                          Array(repeating: .esperandoReposicion, count: 1)
+        ))
+        orders.append(makeOrder(hour: 14, type: .recogida,
+            lineStatuses: Array(repeating: .endedPicking, count: 10) +
+                          Array(repeating: .enPicking, count: 22)
+        ))
+        orders.append(makeOrder(hour: 15, type: .envio,
+            lineStatuses: Array(repeating: .endedPicking, count: 32) +
+                          Array(repeating: .enPicking, count: 6) +
+                          Array(repeating: .esperandoReposicion, count: 3)
+        ))
+        orders.append(makeOrder(hour: 15, type: .envio,
+            lineStatuses: Array(repeating: .endedPicking, count: 32) +
+                                Array(repeating: .enPicking, count: 6)
+        ))
+        orders.append(makeOrder(hour: 15, type: .recogida,
+            lineStatuses: Array(repeating: .esperandoPicking, count: 38)
+        ))
+        orders.append(makeOrder(hour: 15, type: .envio,
+            lineStatuses: Array(repeating: .esperandoPicking, count: 35)
+        ))
+        orders.append(makeOrder(hour: 16, type: .envio,
+            lineStatuses: Array(repeating: .esperandoPicking, count: 22)
+        ))
+        orders.append(makeOrder(hour: 16, type: .recogida,
+            lineStatuses: Array(repeating: .esperandoPicking, count: 3)
+        ))
+        orders.append(makeOrder(hour: 16, type: .envio,
+            lineStatuses: Array(repeating: .esperandoPicking, count: 40)
+        ))
+        orders.append(makeOrder(hour: 17, type: .envio,
+            lineStatuses: Array(repeating: .esperandoPicking, count: 5)
+        ))
+        orders.append(makeOrder(hour: 17, type: .envio,
+            lineStatuses: Array(repeating: .esperandoPicking, count: 17)
+        ))
+        orders.append(makeOrder(hour: 17, type: .envio,
+            lineStatuses: Array(repeating: .esperandoPicking, count: 20)
+        ))
+        orders.append(makeOrder(hour: 17, type: .recogida,
+            lineStatuses: Array(repeating: .esperandoPicking, count: 19)
+        ))
+        orders.append(makeOrder(hour: 17, type: .envio,
+            lineStatuses: Array(repeating: .esperandoPicking, count: 13)
+        ))
+        orders.append(makeOrder(hour: 18, type: .envio,
+            lineStatuses: Array(repeating: .esperandoPicking, count: 22)
+        ))
+        orders.append(makeOrder(hour: 18, type: .recogida,
+            lineStatuses: Array(repeating: .esperandoPicking, count: 33)
+        ))
+        orders.append(makeOrder(hour: 18, type: .envio,
+            lineStatuses: Array(repeating: .esperandoPicking, count: 11)
+        ))
+        orders.append(makeOrder(hour: 18, type: .envio,
+            lineStatuses: Array(repeating: .esperandoPicking, count: 23)
+        ))
+        orders.append(makeOrder(hour: 18, type: .recogida,
+            lineStatuses: Array(repeating: .esperandoPicking, count: 19)
+        ))
+        orders.append(makeOrder(hour: 18, type: .recogida,
+            lineStatuses: Array(repeating: .esperandoPicking, count: 10)
+        ))
+        orders.append(makeOrder(hour: 19, type: .recogida,
+            lineStatuses: Array(repeating: .esperandoPicking, count: 12)
+        ))
+        orders.append(makeOrder(hour: 19, type: .envio,
+            lineStatuses: Array(repeating: .esperandoPicking, count: 32)
+        ))
+        orders.append(makeOrder(hour: 19, type: .recogida,
+            lineStatuses: Array(repeating: .esperandoPicking, count: 41)
+        ))
+        orders.append(makeOrder(hour: 19, type: .recogida,
+            lineStatuses: Array(repeating: .esperandoPicking, count: 12)
+        ))
+        orders.append(makeOrder(hour: 19, type: .recogida,
+            lineStatuses: Array(repeating: .esperandoPicking, count: 12)
+        ))
+        orders.append(makeOrder(hour: 19, type: .envio,
+            lineStatuses: Array(repeating: .esperandoPicking, count: 18)
+        ))
+        orders.append(makeOrder(hour: 19, type: .envio,
+            lineStatuses: Array(repeating: .esperandoPicking, count: 15)
+        ))
+        orders.append(makeOrder(hour: 20, type: .recogida,
+            lineStatuses: Array(repeating: .esperandoPicking, count: 19)
+        ))
+        orders.append(makeOrder(hour: 20, type: .recogida,
+            lineStatuses: Array(repeating: .esperandoPicking, count: 3)
+        ))
 
         return orders
     }
