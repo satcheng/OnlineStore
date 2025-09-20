@@ -16,17 +16,32 @@ struct OrdersListView: View {
     private let pickers = PickerService.samplePickers()
 
     private var filteredOrders: [Order] {
-        viewModel.orders.filter { order in
-            var matches = true
-            if let status = filterStatus {
-                matches = matches && order.status == status
+        viewModel.orders
+            .filter { order in
+                var matches = true
+                if let status = filterStatus {
+                    matches = matches && order.status == status
+                }
+                if let hour = filterHour {
+                    let orderHour = Calendar.current.component(.hour, from: order.date)
+                    matches = matches && orderHour == hour
+                }
+                return matches
             }
-            if let hour = filterHour {
-                let orderHour = Calendar.current.component(.hour, from: order.date)
-                matches = matches && orderHour == hour
+            // 🔹 Ordenar primero por estado, luego por hora
+            .sorted { lhs, rhs in
+                guard
+                    let leftIndex = OrderStatus.allCases.firstIndex(of: lhs.status),
+                    let rightIndex = OrderStatus.allCases.firstIndex(of: rhs.status)
+                else { return false }
+
+                if leftIndex == rightIndex {
+                    // Si están en el mismo estado → ordenar por fecha
+                    return lhs.date < rhs.date
+                } else {
+                    return leftIndex < rightIndex
+                }
             }
-            return matches
-        }
     }
 
     var body: some View {
@@ -51,4 +66,3 @@ struct OrdersListView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 }
-

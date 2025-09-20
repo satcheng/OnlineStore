@@ -15,8 +15,19 @@ final class DashboardViewModel: ObservableObject {
         orders.filter { $0.status == status }.count
     }
 
+    // 🔹 Total pedidos
     var total: Int {
         orders.count
+    }
+
+    // 🔹 Total de líneas (todas las líneas de todos los pedidos)
+    var totalLines: Int {
+        orders.reduce(0) { $0 + $1.lines.count }
+    }
+
+    // 🔹 Total de líneas completadas (estado == .hecho)
+    var completedLines: Int {
+        orders.reduce(0) { $0 + $1.lines.filter { $0.status == .hecho }.count }
     }
 
     // Datos horarios para la gráfica
@@ -34,3 +45,4 @@ final class DashboardViewModel: ObservableObject {
         }
     }
 }
+

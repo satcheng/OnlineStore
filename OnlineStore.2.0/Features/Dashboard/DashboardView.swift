@@ -24,9 +24,12 @@ struct DashboardView: View {
 
                     // 👉 KPI de total pedidos con barra horizontal
                     TotalOrdersCard(
-                        total: viewModel.total,
-                        completed: viewModel.count(for: .hecho)
+                        totalOrders: viewModel.total,
+                        completedOrders: viewModel.count(for: .hecho),
+                        totalLines: viewModel.totalLines,
+                        completedLines: viewModel.completedLines
                     )
+
 
                     // KPIs (fila 1)
                     HStack(spacing: 12) {
